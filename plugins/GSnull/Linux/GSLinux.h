@@ -17,8 +17,10 @@
 #define __GSLINUX_H__
 
 #include <gtk/gtk.h>
+#if !defined(__APPLE__)
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#endif
 
 extern int GSOpenWindow(void *pDsp, const char *Title);
 extern int GSOpenWindow2(void *pDsp, u32 flags);

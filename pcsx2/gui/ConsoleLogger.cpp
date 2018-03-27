@@ -417,7 +417,7 @@ ConsoleLogFrame::ConsoleLogFrame( MainEmuFrame *parent, const wxString& title, A
 
 	menuSources.Append( MenuId_LogSource_Devel, _("Dev/&Verbose"), _("Shows PCSX2 developer logs"), wxITEM_CHECK );
 	menuSources.Append( MenuId_LogSource_CDVD_Info, _("&CDVD reads"), _("Shows disk read activity"), wxITEM_CHECK );
-	
+
 	menuSources.AppendSeparator();
 
 	uint srcnt = ArraySize(ConLogSources);
@@ -1017,11 +1017,12 @@ void Pcsx2App::ProgramLog_PostEvent( wxEvent& evt )
 
 static void __concall ConsoleToFile_Newline()
 {
+	// TODO: lb, unix?
 #if defined(__unix__)
 	if ((g_Conf) && (g_Conf->EmuOptions.ConsoleToStdio)) ConsoleWriter_Stdout.Newline();
 #endif
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 	fputc( '\n', emuLog );
 #else
 	fputs( "\r\n", emuLog );
@@ -1030,6 +1031,7 @@ static void __concall ConsoleToFile_Newline()
 
 static void __concall ConsoleToFile_DoWrite( const wxString& fmt )
 {
+	// TODO: lb, unix?
 #if defined(__unix__)
 	if ((g_Conf) && (g_Conf->EmuOptions.ConsoleToStdio)) ConsoleWriter_Stdout.WriteRaw(fmt);
 #endif
@@ -1224,4 +1226,3 @@ void OSDmonitor(ConsoleColors color, const std::string key, const std::string va
 
 	GSosdMonitor(wxString(key).utf8_str(), wxString(value).utf8_str(), wxGetApp().GetProgramLog()->GetRGBA(color));
 }
-

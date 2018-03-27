@@ -50,7 +50,7 @@ void SetAutoRepeat(bool autorep)
 #endif
 }
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 static bool s_grab_input = false;
 static bool s_Shift = false;
 static unsigned int s_previous_mouse_x = 0;
@@ -81,12 +81,22 @@ void AnalyzeKeyEvent(keyEvent &evt)
             if (key == XK_F12 && s_Shift) {
                 if (!s_grab_input) {
                     s_grab_input = true;
+#ifdef __APPLE__
+          					gdk_pointer_grab(&GSwin, true, GDK_BUTTON_PRESS_MASK, &GSwin, 0, 0);
+          					gdk_keyboard_grab(&GSwin, true, 0);
+#else
                     XGrabPointer(GSdsp, GSwin, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, GSwin, None, CurrentTime);
                     XGrabKeyboard(GSdsp, GSwin, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+#endif
                 } else {
                     s_grab_input = false;
-                    XUngrabPointer(GSdsp, CurrentTime);
-                    XUngrabKeyboard(GSdsp, CurrentTime);
+#ifdef __APPLE__
+          					gdk_display_keyboard_ungrab(GSdsp, 0);
+          					gdk_display_keyboard_ungrab(GSdsp, 0);
+#else
+           					XUngrabPointer(GSdsp, CurrentTime);
+           					XUngrabKeyboard(GSdsp, CurrentTime);
+#endif
                 }
             }
 
@@ -126,9 +136,11 @@ void AnalyzeKeyEvent(keyEvent &evt)
             event.key = key;
             break;
 
+#if !defined(__APPLE__)
         case FocusIn:
             //XAutoRepeatOff(GSdsp);
             break;
+#endif
 
         case FocusOut:
             //XAutoRepeatOn(GSdsp);
@@ -204,7 +216,6 @@ void AnalyzeKeyEvent(keyEvent &evt)
 void PollForX11KeyboardInput()
 {
     keyEvent evt = {0};
-    XEvent E = {0};
 
     // Keyboard input send by PCSX2
     while (!ev_fifo.empty()) {
@@ -214,6 +225,14 @@ void PollForX11KeyboardInput()
         pthread_spin_unlock(&mutex_KeyEvent);
     }
 
+#if defined(__APPLE__)
+  	GdkEvent *ev;
+
+  	while ((ev = gdk_event_get()) != NULL) {
+  		  evt.evt = ev->type;
+#else
+    XEvent E = {0};
+
     // keyboard input
     while (XPending(GSdsp) > 0) {
         XNextEvent(GSdsp, &E);
@@ -221,16 +240,29 @@ void PollForX11KeyboardInput()
         // Change the format of the structure to be compatible with GSOpen2
         // mode (event come from pcsx2 not X)
         evt.evt = E.type;
-        switch (E.type) {
+#endif
+        switch (evt.evt) {
             case MotionNotify:
+#if defined(__APPLE__)
+                evt.key = ((int)ev->button.x & 0xFFFF) | ((int)ev->button.y << 16);
+#else
                 evt.key = (E.xbutton.x & 0xFFFF) | (E.xbutton.y << 16);
+#endif
                 break;
             case ButtonRelease:
             case ButtonPress:
+#if defined(__APPLE__)
+                evt.key = ev->button.button;
+#else
                 evt.key = E.xbutton.button;
+#endif
                 break;
             default:
-                evt.key = (int)XLookupKeysym(&E.xkey, 0);
+#if defined(__APPLE__)
+				        evt.key = ev->key.keyval;
+#else
+				        evt.key = (int)XLookupKeysym(&E.xkey, 0);
+#endif
         }
 
         AnalyzeKeyEvent(evt);

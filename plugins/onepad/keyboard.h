@@ -24,7 +24,9 @@
 
 #include "onepad.h"
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
+
+#include "Darwin/LinuxCompat.h"
 
 extern Display *GSdsp;
 extern void PollForX11KeyboardInput();

@@ -35,7 +35,11 @@ extern Config conf;
 extern const unsigned char version;
 extern const unsigned char revision;
 extern const unsigned char build;
+#ifdef __APPLE__
+extern const unsigned int minor_v;
+#else
 extern const unsigned int minor;
+#endif
 
 void SaveConfig();
 void LoadConfig();

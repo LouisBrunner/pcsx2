@@ -16,10 +16,6 @@
 #include "PrecompiledHeader.h"
 #include "AsyncFileReader.h"
 
-#if defined(__APPLE__)
-#warning Tested on FreeBSD, not OS X. Be very afraid.
-#endif
-
 // The aio module has been reported to cause issues with FreeBSD 10.3, so let's
 // disable it for 10.3 and earlier and hope FreeBSD 11 and onwards is fine.
 // Note: It may be worth checking whether aio provides any performance benefit.
@@ -71,6 +67,7 @@ void FlatFileReader::BeginRead(void* pBuffer, uint sector, uint count)
 	m_aiocb.aio_offset = offset;
 	m_aiocb.aio_nbytes = bytesToRead;
 	m_aiocb.aio_buf = pBuffer;
+	m_aiocb.aio_reqprio = 0;
 
 	if (aio_read(&m_aiocb) != 0) {
 #if defined(__FreeBSD__)

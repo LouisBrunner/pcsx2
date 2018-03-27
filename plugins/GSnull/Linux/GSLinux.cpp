@@ -15,6 +15,7 @@
 
 #include "GS.h"
 #include "GSLinux.h"
+#include "Darwin/LinuxCompat.h"
 
 Display *display;
 int screen;
@@ -22,8 +23,12 @@ GtkScrolledWindow *win;
 
 int GSOpenWindow(void *pDsp, const char *Title)
 {
-    display = XOpenDisplay(0);
-    screen = DefaultScreen(display);
+#ifdef __APPLE__
+    display = gdk_display_open(0);
+#else
+ 	  display = XOpenDisplay(0);
+ 	  screen = DefaultScreen(display);
+#endif
 
     if (pDsp != NULL)
         *(Display **)pDsp = display;

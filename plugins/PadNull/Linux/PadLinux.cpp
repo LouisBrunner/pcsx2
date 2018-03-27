@@ -15,7 +15,11 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
  */
+#if defined(__APPLE__)
+#include "Darwin/LinuxCompat.h"
+#else
 #include <gdk/gdkx.h>
+#endif
 #include "PadLinux.h"
 
 Display *GSdsp;
@@ -23,15 +27,27 @@ int autoRepeatMode;
 
 void _PadUpdate(int pad)
 {
-    XEvent evt;
     KeySym key;
+
+#if defined(__APPLE__)
+  	GdkEvent *evt;
+
+  	while ((evt = gdk_event_get()) != NULL) {
+        switch (evt->type) {
+#else
+    XEvent evt;
 
     // keyboard input
     while (XPending(GSdsp) > 0) {
         XNextEvent(GSdsp, &evt);
         switch (evt.type) {
+#endif
             case KeyPress:
+#if defined(__APPLE__)
+				        key = evt->key.keyval;
+#else
                 key = XLookupKeysym((XKeyEvent *)&evt, 0);
+#endif
 
                 // Add code to check if it's one of the keys we configured here on a real pda plugin..
 
@@ -40,7 +56,11 @@ void _PadUpdate(int pad)
                 break;
 
             case KeyRelease:
+#if defined(__APPLE__)
+				        key = evt->key.keyval;
+#else
                 key = XLookupKeysym((XKeyEvent *)&evt, 0);
+#endif
 
                 // Add code to check if it's one of the keys we configured here on a real pda plugin..
 
@@ -48,9 +68,11 @@ void _PadUpdate(int pad)
                 event.key = key;
                 break;
 
+#if !defined(__APPLE__)
             case FocusIn:
                 XAutoRepeatOff(GSdsp);
                 break;
+#endif
 
             case FocusOut:
                 XAutoRepeatOn(GSdsp);
@@ -66,6 +88,9 @@ s32 _PADOpen(void *pDsp)
 
     win = *(GtkScrolledWindow **)pDsp;
 
+#if defined(__APPLE__)
+		GSdsp = gdk_display_get_default();
+#else
     if (GTK_IS_WIDGET(win)) {
         // Since we have a GtkScrolledWindow, for now we'll grab whatever display
         // comes along instead. Later, we can fiddle with this, but I'm not sure the
@@ -75,6 +100,7 @@ s32 _PADOpen(void *pDsp)
     } else {
         GSdsp = *(Display **)pDsp;
     }
+#endif
 
     XAutoRepeatOff(GSdsp);
 

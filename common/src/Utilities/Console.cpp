@@ -101,6 +101,7 @@ const IConsoleWriter ConsoleWriter_Null =
 //  Console_Stdout
 // --------------------------------------------------------------------------------------
 
+// TODO: lb, unix?
 #if defined(__unix__)
 static __fi const char *GetLinuxConsoleColor(ConsoleColors color)
 {
@@ -177,6 +178,7 @@ static void __concall ConsoleStdout_Newline()
 
 static void __concall ConsoleStdout_DoSetColor(ConsoleColors color)
 {
+// TODO: lb, unix?
 #if defined(__unix__)
     fprintf(stdout_fp, "\033[0m%s", GetLinuxConsoleColor(color));
     fflush(stdout_fp);
@@ -185,6 +187,7 @@ static void __concall ConsoleStdout_DoSetColor(ConsoleColors color)
 
 static void __concall ConsoleStdout_SetTitle(const wxString &title)
 {
+// TODO: lb, unix?
 #if defined(__unix__)
     fputs("\033]0;", stdout_fp);
     fputs(title.utf8_str(), stdout_fp);

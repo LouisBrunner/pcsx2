@@ -36,7 +36,11 @@
 extern const unsigned char version;
 extern const unsigned char revision;
 extern const unsigned char build;
+#ifdef __APPLE__
+extern const unsigned int minor_v;
+#else
 extern const unsigned int minor;
+#endif
 
 extern void SysMessage(const char *fmt, ...);
 #endif /* __CDVD_H__ */

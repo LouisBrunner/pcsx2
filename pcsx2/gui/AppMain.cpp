@@ -247,18 +247,18 @@ public:
 	{
 		m_Method = method;
 	}
-	
+
 	Pcsx2AppMethodEvent( const Pcsx2AppMethodEvent& src )
 		: pxActionEvent( src )
 	{
 		m_Method = src.m_Method;
 	}
-		
+
 	void SetMethod( FnPtr_Pcsx2App method )
 	{
 		m_Method = method;
 	}
-	
+
 protected:
 	void InvokeEvent()
 	{
@@ -480,7 +480,7 @@ void FramerateManager::Reset()
 	Resume();
 }
 
-// 
+//
 void FramerateManager::Resume()
 {
 }
@@ -490,7 +490,7 @@ void FramerateManager::DoFrame()
 	m_fpsqueue_writepos = (m_fpsqueue_writepos + 1) % FramerateQueueDepth;
 	m_fpsqueue[m_fpsqueue_writepos] = GetCPUTicks();
 
-	// intentionally leave 1 on the counter here, since ultimately we want to divide the 
+	// intentionally leave 1 on the counter here, since ultimately we want to divide the
 	// final result (in GetFramerate() by QueueDepth-1.
 	if( m_initpause > 1 ) --m_initpause;
 }
@@ -508,7 +508,7 @@ double FramerateManager::GetFramerate() const
 // ----------------------------------------------------------------------------
 
 // LogicalVsync - Event received from the AppCoreThread (EEcore) for each vsync,
-// roughly 50/60 times a second when frame limiting is enabled, and up to 10,000 
+// roughly 50/60 times a second when frame limiting is enabled, and up to 10,000
 // times a second if not (ok, not quite, but you get the idea... I hope.)
 extern uint eecount_on_last_vdec;
 extern bool FMVstarted;
@@ -545,7 +545,7 @@ void Pcsx2App::LogicalVsync()
 	// Update / Calculate framerate!
 
 	FpsManager.DoFrame();
-	
+
 	if (EmuConfig.Gamefixes.FMVinSoftwareHack || g_Conf->GSWindow.IsToggleAspectRatioSwitch) {
 		if (EnableFMV) {
 			DevCon.Warning("FMV on");
@@ -681,17 +681,17 @@ void Pcsx2App::HandleEvent(wxEvtHandler* handler, wxEventFunction func, wxEvent&
 		// [TODO]  Bind a listener to the CoreThread status, and automatically close the dialog
 		// if the thread starts responding while we're waiting (not hard in fact, but I'm getting
 		// a little tired, so maybe later!)  --air
-	
+
 		Console.Warning( ex.FormatDiagnosticMessage() );
 		wxDialogWithHelpers dialog( NULL, _("PCSX2 Unresponsive Thread"), wxVERTICAL );
-		
+
 		dialog += dialog.Heading( ex.FormatDisplayMessage() + L"\n\n" +
 			pxE( L"'Ignore' to continue waiting for the thread to respond.\n'Cancel' to attempt to cancel the thread.\n'Terminate' to quit PCSX2 immediately.\n"
 			)
 		);
 
 		int result = pxIssueConfirmation( dialog, MsgButtons().Ignore().Cancel().Custom( _("Terminate") ) );
-		
+
 		if( result == pxID_CUSTOM )
 		{
 			// fastest way to kill the process! (works in Linux and win32, thanks to windows having very
@@ -790,7 +790,7 @@ void Pcsx2App::enterDebugMode()
 	if (dlg)
 		dlg->setDebugMode(true,false);
 }
-	
+
 void Pcsx2App::leaveDebugMode()
 {
 	DisassemblyDialog* dlg = GetDisassemblyPtr();
@@ -833,7 +833,7 @@ void AppApplySettings( const AppConfig* oldconf )
 		wxDoNotLogInThisScope please;
 		i18n_SetLanguage( g_Conf->LanguageId, g_Conf->LanguageCode );
 	}
-	
+
 	CorePlugins.SetSettingsFolder( GetSettingsFolder().ToString() );
 
 	// Update the compression attribute on the Memcards folder.
@@ -946,7 +946,7 @@ void Pcsx2App::OpenGsPanel()
 		//
 		// FIXME: Gsdx memory leaks in DX10 have been fixed.  This code may not be needed
 		// anymore.
-		
+
 		const wxSize oldsize( gsFrame->GetSize() );
 		wxSize newsize( oldsize );
 		newsize.DecBy(1);
@@ -954,7 +954,7 @@ void Pcsx2App::OpenGsPanel()
 		gsFrame->SetSize( newsize );
 		gsFrame->SetSize( oldsize );
 	}
-	
+
 	pxAssertDev( !GetCorePlugins().IsOpen( PluginId_GS ), "GS Plugin must be closed prior to opening a new Gs Panel!" );
 
 #ifdef __WXGTK__
@@ -976,6 +976,10 @@ void Pcsx2App::OpenGsPanel()
 
 	GdkWindow* draw_window = gtk_widget_get_window(child_window);
 
+#ifdef __WXMAC__
+	pDsp[0] = (uptr)gdk_window_get_display(draw_window);
+	pDsp[1] = (uptr)draw_window;
+#else
 #if GTK_MAJOR_VERSION < 3
 	Window Xwindow = GDK_WINDOW_XWINDOW(draw_window);
 #else
@@ -985,6 +989,7 @@ void Pcsx2App::OpenGsPanel()
 
 	pDsp[0] = (uptr)XDisplay;
 	pDsp[1] = (uptr)Xwindow;
+#endif
 #else
 	pDsp[0] = (uptr)gsFrame->GetViewport()->GetHandle();
 	pDsp[1] = NULL;
@@ -1060,7 +1065,7 @@ public:
 	{
 		return _("Executing PS2 Virtual Machine...");
 	}
-	
+
 	SysExecEvent_Execute()
 		: m_UseCDVDsrc(false)
 		, m_UseELFOverride(false)

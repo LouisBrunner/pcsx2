@@ -199,7 +199,7 @@ class SysExecEvent_ApplyPlugins : public SysExecEvent
 
 protected:
 	ApplyPluginsDialog*	m_dialog;
-	
+
 public:
 	wxString GetEventName() const { return L"PluginSelectorPanel::ApplyPlugins"; }
 
@@ -215,7 +215,7 @@ public:
 protected:
 	void InvokeEvent();
 	void CleanupEvent();
-	
+
 	void PostFinishToDialog();
 };
 
@@ -255,7 +255,7 @@ void SysExecEvent_ApplyPlugins::InvokeEvent()
 	ScopedCoreThreadPause paused_core;
 
 	std::unique_ptr<VmStateBuffer> buffer;
-	
+
 	if( SysHasValidState() )
 	{
 		paused_core.AllowResume();
@@ -268,7 +268,7 @@ void SysExecEvent_ApplyPlugins::InvokeEvent()
 
 		buffer.reset(new VmStateBuffer(L"StateBuffer_ApplyNewPlugins"));
 		memSavingState saveme(buffer.get());
-		
+
 		saveme.FreezeAll();
 	}
 
@@ -278,7 +278,7 @@ void SysExecEvent_ApplyPlugins::InvokeEvent()
 	CorePlugins.Unload();
 	LoadPluginsImmediate();
 	CorePlugins.Init();
-	
+
 	if( buffer ) CoreThread.UploadStateCopy( *buffer );
 
 	PostFinishToDialog();
@@ -297,7 +297,7 @@ void SysExecEvent_ApplyPlugins::PostFinishToDialog()
 
 void SysExecEvent_ApplyPlugins::CleanupEvent()
 {
-	PostFinishToDialog();	
+	PostFinishToDialog();
 	_parent::CleanupEvent();
 }
 
@@ -582,7 +582,7 @@ bool Panels::PluginSelectorPanel::ValidateEnumerationStatus()
 	// set the gague length a little shorter than the plugin count.  2 reasons:
 	//  * some of the plugins might be duds.
 	//  * on high end machines and Win7, the statusbar lags a lot and never gets to 100% before being hidden.
-	
+
 	m_StatusPanel->SetGaugeLength( std::max( 1, (pluggers-1) - (pluggers/8) ) );
 
 	return validated;
@@ -603,7 +603,7 @@ void Panels::PluginSelectorPanel::OnPluginSelected( wxCommandEvent& evt )
 
 			bool isSame = (!CorePlugins.AreLoaded()) || g_Conf->FullpathMatchTest( pi->id, (*m_FileList)[(uptr)box.GetClientData(box.GetSelection())] );
 			m_ComponentBoxes->GetConfigButton( pi->id ).Enable( isSame );
-			
+
 			if( !isSame ) evt.Skip();		// enabled Apply button! :D
 			return;
 		}
@@ -635,7 +635,7 @@ void Panels::PluginSelectorPanel::OnConfigure_Clicked( wxCommandEvent& evt )
 
 	if( ConfigureFnptr configfunc = (ConfigureFnptr)dynlib.GetSymbol( tbl_PluginInfo[pid].GetShortname() + L"configure" ) )
 	{
-		
+
 		wxWindowDisabler disabler;
 		wxDoNotLogInThisScope quiettime;
 		ScopedCoreThreadPause paused_core( new SysExecEvent_SaveSinglePlugin(pid) );

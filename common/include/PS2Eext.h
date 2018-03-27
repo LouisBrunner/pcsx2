@@ -30,7 +30,7 @@
 
 #define EXPORT_C_(type) extern "C" type CALLBACK
 
-#elif defined(__unix__)
+#elif defined(__unix__) || defined(__APPLE__)
 
 #include <gtk/gtk.h>
 #include <cstring>
@@ -200,7 +200,7 @@ struct PluginConf
     }
 };
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 
 static void SysMessage(const char *fmt, ...)
 {
@@ -260,49 +260,6 @@ static void __forceinline PluginNullAbout(const char *aboutText)
 }
 
 #define ENTRY_POINT /* We don't need no stinkin' entry point! */
-
-
-#elif defined(__WXMAC__) || defined(__APPLE__)
-
-static void SysMessage(const char *fmt, ...)
-{
-    va_list list;
-    char msg[512];
-
-    va_start(list, fmt);
-    vsprintf(msg, fmt, list);
-    va_end(list);
-
-    if (msg[strlen(msg) - 1] == '\n')
-        msg[strlen(msg) - 1] = 0;
-
-    // TODO OSX can we use WX MessageBox here or should Cocoa MessageBox used?
-}
-
-static void SysMessage(const wchar_t *fmt, ...)
-{
-    va_list list;
-    wchar_t msg[512];
-
-    va_start(list, fmt);
-    //vsprintf(msg, fmt, list);
-    va_end(list);
-
-    // TODO OSX can we use WX MessageBox here or should Cocoa MessageBox used?
-}
-
-static void __forceinline PluginNullConfigure(std::string desc, int &log)
-{
-    SysMessage("This space is intentionally left blank.");
-}
-
-static void __forceinline PluginNullAbout(const char *aboutText)
-{
-    SysMessage(aboutText);
-}
-
-#define ENTRY_POINT /* We don't need no stinkin' entry point! */ // TODO OSX WTF is this anyway?
-
 
 #else
 

@@ -32,6 +32,10 @@
 #include <windows.h>
 #include <windowsx.h>
 
+#elif defined(__APPLE__)
+
+#include "Darwin/LinuxCompat.h"
+
 #else
 
 #include <X11/Xlib.h>
@@ -49,7 +53,7 @@ using namespace std;
 #define PADdefs
 #include "PS2Edefs.h"
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 #include "GamePad.h"
 #endif
 #include "bitwise.h"

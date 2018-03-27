@@ -26,7 +26,7 @@ typedef struct _keyEvent keyEvent;
 #include "Windows/GSwin.h"
 #endif
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #include "Linux/GSLinux.h"
 #endif
 

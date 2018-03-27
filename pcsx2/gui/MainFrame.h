@@ -79,7 +79,7 @@ public:
 	{
 		m_menu_cmd = menu_command;
 	}
-	
+
 	virtual ~InvokeMenuCommand_OnSysStateUnlocked() = default;
 
 	virtual void SaveStateAction_OnCreateFinished()
@@ -97,7 +97,7 @@ class MainEmuFrame : public wxFrame,
 	public EventListener_AppStatus
 {
 	typedef wxFrame _parent;
-	
+
 protected:
 	bool			m_RestartEmuOnDelete;
 
@@ -117,6 +117,7 @@ protected:
 
 	wxMenuItem*		m_menuItem_RecentIsoMenu;
 	wxMenuItem&		m_MenuItem_Console;
+  // TODO: lb, unix?
 #if defined(__unix__)
 	wxMenuItem&		m_MenuItem_Console_Stdio;
 #endif
@@ -138,7 +139,7 @@ public:
 	void RemoveCdvdMenu();
 	void EnableMenuItem( int id, bool enable );
 	void EnableCdvdPluginSubmenu(bool isEnable = true);
-	
+
 	bool Destroy();
 
 	void ApplyConfigToGui(AppConfig& configToApply, int flags = 0);

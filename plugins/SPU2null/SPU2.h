@@ -47,7 +47,11 @@ extern FILE *spu2Log;
 extern const u8 version;
 extern const u8 revision;
 extern const u8 build;
+#ifdef __APPLE__
+extern const u32 minor_v;
+#else
 extern const u32 minor;
+#endif
 extern const char *libraryName;
 
 typedef struct

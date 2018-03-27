@@ -3,15 +3,13 @@
 #-------------------------------------------------------------------------------
 # This function detects on which OS cmake is run and set a flag to control the
 # build process. Supported OS: Linux, MacOSX, Windows
-# 
+#
 # On linux, it also set a flag for specific distribution (ie Fedora)
 #-------------------------------------------------------------------------------
 function(detectOperatingSystem)
     if(WIN32)
         set(Windows TRUE PARENT_SCOPE)
     elseif(UNIX AND APPLE)
-        # No easy way to filter out iOS.
-        message(WARNING "OS X/iOS isn't supported, the build will most likely fail")
         set(MacOSX TRUE PARENT_SCOPE)
     elseif(UNIX)
         if(CMAKE_SYSTEM_NAME MATCHES "Linux")

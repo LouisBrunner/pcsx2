@@ -31,7 +31,7 @@
 #include <windows.h>
 #include <windowsx.h>
 
-#else
+#elif !defined(__APPLE__)
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -101,7 +101,7 @@ enum gamePadValues {
     PAD_R_LEFT    // Right joystick (Left) ←
 };
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 #include "GamePad.h"
 #endif
 #include "bitwise.h"

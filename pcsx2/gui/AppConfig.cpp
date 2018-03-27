@@ -108,7 +108,7 @@ namespace PathDefs
 			static const wxDirName retval( L"themes" );
 			return retval;
 		}
-		
+
 		const wxDirName& Docs()
 		{
 			static const wxDirName retval( L"docs" );
@@ -132,7 +132,7 @@ namespace PathDefs
 			return cwdCache;
 		}
 		else if (InstallationMode == InstallMode_Portable)
-*/		
+*/
 		if (InstallationMode == InstallMode_Registered || InstallationMode == InstallMode_Portable)
 		{
 			static const wxDirName appCache( (wxDirName)
@@ -141,7 +141,7 @@ namespace PathDefs
 		}
 		else
 			pxFail( "Unimplemented user local folder mode encountered." );
-		
+
 		static const wxDirName dotFail(L".");
 		return dotFail;
 	}
@@ -209,7 +209,7 @@ namespace PathDefs
 	{
 		return GetDocuments() + Base::CheatsWS();
 	}
-	
+
 	wxDirName GetDocs()
 	{
 		return AppRoot() + Base::Docs();
@@ -671,7 +671,7 @@ void AppConfig::LoadSaveRootItems( IniInterface& ini )
 	IniEntry( EnablePresets );
 	IniEntry( PresetIndex );
 	IniEntry( AskOnBoot );
-	
+
 	#ifdef __WXMSW__
 	IniEntry( McdCompressNTFS );
 	#endif
@@ -772,7 +772,7 @@ void AppConfig::FolderOptions::LoadSave( IniInterface& ini )
 	//when saving in portable mode, we save relative paths if possible
 	 //  --> on load, these relative paths will be expanded relative to the exe folder.
 	bool rel = ( ini.IsLoading() || IsPortable() );
-	
+
 	IniEntryDirFile( Bios,  rel);
 	IniEntryDirFile( Snapshots,  rel );
 	IniEntryDirFile( Savestates,  rel );
@@ -822,7 +822,7 @@ void AppConfig::FilenameOptions::LoadSave( IniInterface& ini )
 			ini.Entry( tbl_PluginInfo[i].GetShortname(), Plugins[i], pc );
 	}
 
-	if( needRelativeName ) { 
+	if( needRelativeName ) {
 		wxFileName bios_filename = wxFileName( Bios.GetFullName() );
 		ini.Entry( L"BIOS", bios_filename, pc );
 	} else
@@ -1042,7 +1042,7 @@ bool AppConfig::IsOkApplyPreset(int n)
 	EmuOptions.GS					= default_Pcsx2Config.GS;
 	EmuOptions.GS.FrameLimitEnable	= original_GS.FrameLimitEnable;	//Frame limiter is not modified by presets
 	//EmuOptions.GS.VsyncEnable		= original_GS.VsyncEnable;
-	
+
 	EmuOptions.Cpu					= default_Pcsx2Config.Cpu;
 	EmuOptions.Gamefixes			= default_Pcsx2Config.Gamefixes;
 	EmuOptions.Speedhacks			= default_Pcsx2Config.Speedhacks;
@@ -1058,7 +1058,7 @@ bool AppConfig::IsOkApplyPreset(int n)
 
 		case 5 :	//Set VU cycle steal to 2 clicks (maximum-1)
 					vuUsed?0:(vuUsed=true, EmuOptions.Speedhacks.VUCycleSteal = 2);
-		
+
 		case 4 :	//set EE cyclerate to 2 clicks (maximum)
 					eeUsed?0:(eeUsed=true, EmuOptions.Speedhacks.EECycleRate = -2);
 
@@ -1288,7 +1288,7 @@ void AppLoadSettings()
 }
 
 static void SaveUiSettings()
-{	
+{
 	if( !wxFile::Exists( g_Conf->CurrentIso ) )
 		g_Conf->CurrentIso.clear();
 

@@ -90,7 +90,7 @@ public:
 	{
 		return SysTraceLog::IsActive() && EmuConfig.Trace.EE.m_EnableAll;
 	}
-	
+
 	wxString GetCategory() const { return L"EE"; }
 };
 
@@ -268,7 +268,7 @@ struct SysTraceLogPack
 		SysTraceLog_EE_Disasm		COP1;
 		SysTraceLog_EE_Disasm		COP2;
 		SysTraceLog_EE_Disasm		Cache;
-		
+
 		SysTraceLog_EE_Registers	KnownHw;
 		SysTraceLog_EE_Registers	UnknownHw;
 		SysTraceLog_EE_Registers	DMAhw;
@@ -283,7 +283,7 @@ struct SysTraceLogPack
 
 		EE_PACK();
 	} EE;
-	
+
 	struct IOP_PACK
 	{
 		SysTraceLog_IOP				Bios;
@@ -345,9 +345,6 @@ extern void __Log( const char* fmt, ... );
 #ifdef __WXMAC__
     // Not available on OSX, apparently always double buffered window.
 #   define                          SetDoubleBuffered(x)
-
-    // TODO OSX OsxKeyCodes.cpp pending
-#   define NewPipeRedir(x)          NULL
 #endif
 
 #define macTrace(trace)	SysTraceActive(trace) && SysTrace.trace.Write

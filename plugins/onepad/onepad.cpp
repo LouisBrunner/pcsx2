@@ -183,7 +183,7 @@ PADopen(void *pDsp)
 
     g_ev_fifo.reset();
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
     GamePad::EnumerateGamePads(s_vgamePad);
 #endif
     return _PADopen(pDsp);
@@ -339,6 +339,7 @@ PADkeyEvent()
     return &s_event;
 }
 
+// TODO: lb, unix?
 #if defined(__unix__)
 EXPORT_C_(void)
 PADWriteEvent(keyEvent &evt)

@@ -1,6 +1,6 @@
 /*  PCSX2 - PS2 Emulator for PCs
  *  Copyright (C) 2002-2010  PCSX2 Dev Team
- * 
+ *
  *  PCSX2 is free software: you can redistribute it and/or modify it under the terms
  *  of the GNU Lesser General Public License as published by the Free Software Found-
  *  ation, either version 3 of the License, or (at your option) any later version.
@@ -70,7 +70,7 @@ public:
 	{
 		m_evt = src.m_evt;
 	}
-	
+
 	void SetEventType( PluginEventType evt ) { m_evt = evt; }
 	PluginEventType GetEventType() { return m_evt; }
 
@@ -217,7 +217,7 @@ static void _SetLogFolder()
 }
 
 void AppCorePlugins::Load( PluginsEnum_t pid, const wxString& srcfile )
-{ 
+{
 	if( !wxThread::IsMain() )
 	{
 		Sleep( 5 );
@@ -225,7 +225,7 @@ void AppCorePlugins::Load( PluginsEnum_t pid, const wxString& srcfile )
 		wxGetApp().ProcessAction( evt);
 		return;
 	}
-	
+
 	_parent::Load( pid, srcfile );
 }
 
@@ -385,7 +385,7 @@ public:
 	{
 		ConvertPluginFilenames( m_folders );
 	}
-	
+
 	wxString GetEventName() const
 	{
 		return L"LoadCorePlugins";
@@ -429,7 +429,13 @@ int EnumeratePluginsInFolder(const wxDirName& searchpath, wxArrayString* dest)
 	wxString pattern( L"*%s*" );
 #endif
 
-	wxDir::GetAllFiles( searchpath.ToString(), realdest, pxsFmt( pattern, WX_STR(wxDynamicLibrary::GetDllExt())), wxDIR_FILES );
+#ifdef __WXMAC__
+	wxString ext(".so");
+#else
+	wxString ext( wxDynamicLibrary::GetDllExt()) );
+#endif
+
+	wxDir::GetAllFiles( searchpath.ToString(), realdest, pxsFmt( pattern, WX_STR( ext ) ), wxDIR_FILES );
 
 	// SECURITY ISSUE:  (applies primarily to Windows, but is a good idea on any platform)
 	//   The search folder order for plugins can vary across operating systems, and in some poorly designed
@@ -558,7 +564,7 @@ void SysExecEvent_SaveSinglePlugin::InvokeEvent()
 			memSavingState save( plugstore.get() );
 			GetCorePlugins().Freeze( m_pid, save );
 		}
-			
+
 		GetCorePlugins().Close( m_pid );
 		_post_and_wait( paused_core );
 

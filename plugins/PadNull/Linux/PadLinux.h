@@ -20,7 +20,9 @@
 #define __PADLINUX_H__
 
 #include "Pad.h"
+#if !defined(__APPLE__)
 #include <X11/Xlib.h>
+#endif
 
 void _PadUpdate(int pad);
 s32 _PADOpen(void *pDsp);
