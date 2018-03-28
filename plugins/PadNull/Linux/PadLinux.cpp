@@ -77,6 +77,9 @@ void _PadUpdate(int pad)
             case FocusOut:
                 XAutoRepeatOn(GSdsp);
                 break;
+
+            default:
+              break;
         }
     }
 }

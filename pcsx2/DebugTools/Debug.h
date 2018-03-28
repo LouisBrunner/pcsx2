@@ -71,7 +71,7 @@ public:
 	SysTraceLog( const SysTraceLogDescriptor* desc )
 		: TextFileTraceLog( &desc->base ) {}
 
-	void DoWrite( const char *fmt ) const;
+	void DoWrite( const char *fmt ) const override;
 	bool IsActive() const override
 	{
 		return EmuConfig.Trace.Enabled && Enabled;

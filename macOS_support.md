@@ -6,20 +6,16 @@
  - Compiling null plugins
  - Running PCSX2
  - Loading plugins
+ - Configure plugins
 
 ## To do
 
- - Configure plugins
- - Correct Documents location
- - Load Game
-
+ - Crash on null plugins configure
+ - Change Documents location
  - Semaphore Wait aborts
  - Package mode
- - Review every warning
 
  - Compiling sound plugins
+
+ - Load Game
  - Compiling graphic plugins
-
-## Abandoned
-
- - CDVD support
