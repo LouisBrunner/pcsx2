@@ -7,11 +7,11 @@
  - Running PCSX2
  - Loading plugins
  - Configure plugins
+ - Change Documents location
 
 ## To do
 
  - Crash on null plugins configure
- - Change Documents location
  - Semaphore Wait aborts
  - Package mode
 

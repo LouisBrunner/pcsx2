@@ -412,7 +412,13 @@ wxMessageOutput* Pcsx2AppTraits::CreateMessageOutput()
 //  Pcsx2StandardPaths
 // --------------------------------------------------------------------------------------
 #ifdef wxUSE_STDPATHS
-class Pcsx2StandardPaths : public wxStandardPaths
+# ifdef __WXMAC__
+#  define Pcsx2StandardPathsBase wxStandardPathsCF
+# else
+#  define Pcsx2StandardPathsBase wxStandardPaths
+# endif
+
+class Pcsx2StandardPaths : public Pcsx2StandardPathsBase
 {
 public:
 	wxString GetResourcesDir() const
