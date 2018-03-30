@@ -98,7 +98,6 @@ endif()
 #---------------------------------------
 #			cdvdGigaherz
 #---------------------------------------
-# TODO: lb, include?
 if(NOT EXISTS "${CMAKE_SOURCE_DIR}/plugins/cdvdGigaherz" OR NOT Linux)
     set(cdvdGigaherz FALSE)
 elseif(Linux AND GTKn_FOUND AND LIBUDEV_FOUND)
