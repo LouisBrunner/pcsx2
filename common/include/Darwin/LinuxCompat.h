@@ -5,9 +5,8 @@
 
 #include <gdk/gdk.h>
 typedef GdkDisplay Display;
-typedef GdkWindow Window;
+typedef GdkWindow* Window;
 #define XKeysymToString gdk_keyval_name
-// TODO: lb
 #define XResetScreenSaver(x)
 
 #define KeySym guint

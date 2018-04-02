@@ -47,14 +47,15 @@
 //
 // --------------------------------------------------------------------------------------
 
-#define MACH_CHECK(mach_retval)                                        \
+#define _MACH_CHECK(mach_retval, file, line)                           \
     do {                                                               \
         kern_return_t _kr = (mach_retval);                             \
         if (_kr != KERN_SUCCESS) {                                     \
-            fprintf(stderr, "mach error: %s", mach_error_string(_kr)); \
+            fprintf(stderr, "%s:%d: mach error: %s\n", file, line, mach_error_string(_kr)); \
             assert(_kr == KERN_SUCCESS);                               \
         }                                                              \
     } while (0)
+#define MACH_CHECK(mach_retval) _MACH_CHECK(mach_retval, __FILE__, __LINE__)
 
 Threading::Semaphore::Semaphore()
 {
@@ -94,7 +95,13 @@ void Threading::Semaphore::Post(int multiple)
 void Threading::Semaphore::WaitWithoutYield()
 {
     pxAssertMsg(!wxThread::IsMain(), "Unyielding semaphore wait issued from the main/gui thread.  Please use Wait() instead.");
-    MACH_CHECK(semaphore_wait(m_sema));
+    kern_return_t kr;
+    mach_timespec_t ts {5, 0};
+    while ((kr = semaphore_timedwait(m_sema, ts)) == KERN_OPERATION_TIMED_OUT) {
+      pthread_testcancel();
+    }
+    pthread_testcancel();
+    MACH_CHECK(kr);
     __atomic_sub_fetch(&m_counter, 1, __ATOMIC_SEQ_CST);
 }
 

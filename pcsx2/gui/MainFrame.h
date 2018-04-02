@@ -117,8 +117,7 @@ protected:
 
 	wxMenuItem*		m_menuItem_RecentIsoMenu;
 	wxMenuItem&		m_MenuItem_Console;
-  // TODO: lb, unix?
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 	wxMenuItem&		m_MenuItem_Console_Stdio;
 #endif
 
