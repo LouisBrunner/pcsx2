@@ -82,8 +82,8 @@ void AnalyzeKeyEvent(keyEvent &evt)
                 if (!s_grab_input) {
                     s_grab_input = true;
 #ifdef __APPLE__
-          					gdk_pointer_grab(&GSwin, true, GDK_BUTTON_PRESS_MASK, &GSwin, 0, 0);
-          					gdk_keyboard_grab(&GSwin, true, 0);
+          					gdk_pointer_grab(GSwin, true, GDK_BUTTON_PRESS_MASK, GSwin, 0, 0);
+          					gdk_keyboard_grab(GSwin, true, 0);
 #else
                     XGrabPointer(GSdsp, GSwin, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, GSwin, None, CurrentTime);
                     XGrabKeyboard(GSdsp, GSwin, True, GrabModeAsync, GrabModeAsync, CurrentTime);
@@ -226,58 +226,70 @@ void PollForX11KeyboardInput()
     }
 
 #if defined(__APPLE__)
-  	GdkEvent *ev;
+    GdkEvent *ev;
 
-  	while ((ev = gdk_event_get()) != NULL) {
-  		  evt.evt = ev->type;
+    while ((ev = gdk_event_get()) != NULL) {
+        evt.evt = ev->type;
+        switch (ev->type) {
+            case MotionNotify:
+                evt.key = ((int)ev->button.x & 0xFFFF) | ((int)ev->button.y << 16);
+                break;
+            case ButtonRelease:
+            case ButtonPress:
+                evt.key = ev->button.button;
+                break;
+            default:
+                evt.key = ev->key.keyval;
+        }
+
+        AnalyzeKeyEvent(evt);
+    }
 #else
     XEvent E = {0};
 
-    // keyboard input
     while (XPending(GSdsp) > 0) {
         XNextEvent(GSdsp, &E);
 
         // Change the format of the structure to be compatible with GSOpen2
         // mode (event come from pcsx2 not X)
         evt.evt = E.type;
-#endif
-        switch (evt.evt) {
+        switch (E.type) {
             case MotionNotify:
-#if defined(__APPLE__)
-                evt.key = ((int)ev->button.x & 0xFFFF) | ((int)ev->button.y << 16);
-#else
                 evt.key = (E.xbutton.x & 0xFFFF) | (E.xbutton.y << 16);
-#endif
                 break;
             case ButtonRelease:
             case ButtonPress:
-#if defined(__APPLE__)
-                evt.key = ev->button.button;
-#else
                 evt.key = E.xbutton.button;
-#endif
                 break;
             default:
-#if defined(__APPLE__)
-				        evt.key = ev->key.keyval;
-#else
-				        evt.key = (int)XLookupKeysym(&E.xkey, 0);
-#endif
+                evt.key = (int)XLookupKeysym(&E.xkey, 0);
         }
 
         AnalyzeKeyEvent(evt);
     }
+#endif
 }
 
+// TODO: lb, remove debug
 bool PollX11KeyboardMouseEvent(u32 &pkey)
 {
+    GSList* list = gdk_display_manager_list_displays(NULL);
+    for (GSList* tmp_list = list; tmp_list; tmp_list = tmp_list->next) {
+      PAD_LOG("x11: ??? %p\n", tmp_list->data);
+    }
+
+    PAD_LOG("x11: keyboard %p/%p\n", GSdsp, GSwin);
     GdkEvent *ev = gdk_event_get();
+    // GdkEvent *ev = gdk_display_get_event(GSdsp);
 
     if (ev != NULL) {
+      PAD_LOG("x11: event %d\n", ev->type);
         if (ev->type == GDK_KEY_PRESS) {
+            PAD_LOG("x11: key press %d\n", ev->key.keyval);
             pkey = ev->key.keyval != GDK_KEY_Escape ? ev->key.keyval : 0;
             return true;
         } else if (ev->type == GDK_BUTTON_PRESS) {
+            PAD_LOG("x11: button press %d\n", ev->button.button);
             pkey = ev->button.button;
             return true;
         }

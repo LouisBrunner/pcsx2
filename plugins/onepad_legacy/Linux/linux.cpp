@@ -67,13 +67,8 @@ PADtest()
 
 s32 _PADopen(void *pDsp)
 {
-#if defined(__APPLE__)
-    GSdsp = (Display*)pDsp;
-    GSwin = *(Window*)((uptr*)pDsp)[1];
-#else
     GSdsp = *(Display **)pDsp;
     GSwin = (Window) * (((u32 *)pDsp) + 1);
-#endif
 
     SetAutoRepeat(false);
     return 0;
