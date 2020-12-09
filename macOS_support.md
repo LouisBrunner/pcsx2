@@ -16,7 +16,7 @@
  - Crash on null plugins configure -> gtk problem
  - Crash when quitting from console log -> wxWindow bug when deleting MainEmuFrame, probably linked to thread block/cancel (see hang on quitting main window)
  - Block on onepad rebinding -> key not detected, no gdk display! (gdk_display_open not called yet -> use cocoa native API)
- - Load Game -> hang then crash on recompiled stuff, no idea
+ - Load Game -> crash after a vtlb_DynGenWrite(128) (load from cpuRegs to xmm0 then crash on loading in main memory)
 
  - Package mode
  - Compiling sound plugins

@@ -34,20 +34,8 @@ void _PadUpdate(int pad)
 
   	while ((evt = gdk_event_get()) != NULL) {
         switch (evt->type) {
-#else
-    XEvent evt;
-
-    // keyboard input
-    while (XPending(GSdsp) > 0) {
-        XNextEvent(GSdsp, &evt);
-        switch (evt.type) {
-#endif
             case KeyPress:
-#if defined(__APPLE__)
 				        key = evt->key.keyval;
-#else
-                key = XLookupKeysym((XKeyEvent *)&evt, 0);
-#endif
 
                 // Add code to check if it's one of the keys we configured here on a real pda plugin..
 
@@ -56,11 +44,7 @@ void _PadUpdate(int pad)
                 break;
 
             case KeyRelease:
-#if defined(__APPLE__)
 				        key = evt->key.keyval;
-#else
-                key = XLookupKeysym((XKeyEvent *)&evt, 0);
-#endif
 
                 // Add code to check if it's one of the keys we configured here on a real pda plugin..
 
@@ -68,11 +52,38 @@ void _PadUpdate(int pad)
                 event.key = key;
                 break;
 
-#if !defined(__APPLE__)
             case FocusIn:
                 XAutoRepeatOff(GSdsp);
                 break;
-#endif
+
+            default:
+              break;
+        }
+    }
+#else
+    XEvent evt;
+
+    // keyboard input
+    while (XPending(GSdsp) > 0) {
+        XNextEvent(GSdsp, &evt);
+        switch (evt.type) {
+            case KeyPress:
+                key = XLookupKeysym((XKeyEvent *)&evt, 0);
+
+                // Add code to check if it's one of the keys we configured here on a real pda plugin..
+
+                event.evt = KEYPRESS;
+                event.key = key;
+                break;
+
+            case KeyRelease:
+                key = XLookupKeysym((XKeyEvent *)&evt, 0);
+
+                // Add code to check if it's one of the keys we configured here on a real pda plugin..
+
+                event.evt = KEYRELEASE;
+                event.key = key;
+                break;
 
             case FocusOut:
                 XAutoRepeatOn(GSdsp);
@@ -82,6 +93,7 @@ void _PadUpdate(int pad)
               break;
         }
     }
+#endif
 }
 
 s32 _PADOpen(void *pDsp)

@@ -253,6 +253,35 @@ static u8* GetIndirectDispatcherPtr( int mode, int operandsize, int sign = 0 )
 	return &m_IndirectDispatchers[(mode*(7*A)) + (sign*5*A) + (operandsize*A)];
 }
 
+/*
+-: sign = 1
+	R: mode = 0
+		  8: size = 0; 160=0+160+0
+		 16: size = 1; 192=0+160+32
+		 32: size = 2; 224=0+160+64
+		 64: size = 3; 256=0+160+96
+		128: size = 4; 288=0+160+128
+	W: mode = 1
+		  8: size = 0; 384=224+160+0
+		 16: size = 1; 416=224+160+32
+		 32: size = 2; 448=224+160+64
+		 64: size = 3; 480=224+160+96
+		128: size = 4; 512=224+160+128
++: sign = 0
+	R: mode = 0
+		  8: size = 0;   0=0+0+0
+		 16: size = 1;  32=0+0+32
+		 32: size = 2;  64=0+0+64
+		 64: size = 3;  96=0+0+96
+		128: size = 4; 128=0+0+128
+	W: mode = 1
+		  8: size = 0; 224=224+0+0
+		 16: size = 1; 256=224+0+32
+		 32: size = 2; 288=224+0+64
+		 64: size = 3; 320=224+0+96
+		128: size = 4; 352=224+0+128
+*/
+
 // ------------------------------------------------------------------------
 // Generates a JS instruction that targets the appropriate templated instance of
 // the vtlb Indirect Dispatcher.
@@ -313,6 +342,8 @@ void vtlb_dynarec_init()
 	static bool hasBeenCalled = false;
 	if (hasBeenCalled) return;
 	hasBeenCalled = true;
+
+	Console.WriteLn("heyholetsgo: %p", m_IndirectDispatchers);
 
 	// In case init gets called multiple times:
 	HostSys::MemProtectStatic( m_IndirectDispatchers, PageAccess_ReadWrite() );
